@@ -1,0 +1,10 @@
+Reference,Region_label,Chromosom,start,end,length
+sample_1,Region_1,contig_3,21289,104566,83277
+sample_1,Region_2,contig_1,1794075,1795972,1897
+sample_1,Region_3,contig_1,1805587,1841890,36303
+sample_2,Region_1,contig_3,21289,104566,83277
+sample_2,Region_2,contig_1,1794075,1795972,1897
+sample_2,Region_3,contig_1,1805587,1842669,37082
+sample_3,Region_1,contig_1,573148,658327,85179
+sample_3,Region_2,contig_1,1879378,1881275,1897
+sample_3,Region_3,contig_1,1890890,1927972,37082
