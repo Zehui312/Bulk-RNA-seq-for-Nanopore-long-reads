@@ -200,6 +200,8 @@ group3 <- unique(coldata$Group)[3]
 rld_assay <- assay(rld)
 rld_assay <- as.data.frame(rld_assay)
 rld_assay$ID <- rownames(rld_assay)
+norm_counts <- counts(dds, normalized = TRUE)
+write.csv(as.data.frame(norm_counts), file = "Normalized_counts.csv")
 
 all_res_gff <- data.frame()
 for (i in 1:(length(unique(coldata$Group))-1)) {
@@ -218,7 +220,7 @@ for (i in 1:(length(unique(coldata$Group))-1)) {
     diff_gene_tab <- subset(res_gff, padj < 0.05 & abs(log2FoldChange) > 1.8)
     diff_gene_tab$regulation <- ifelse(diff_gene_tab$log2FoldChange > 0, "Up", "Down")
     diff_gene_tab <- left_join(diff_gene_tab, rld_assay, by = "ID")
-    diff_gene_tab$ID <- NULL
+    # diff_gene_tab$ID <- NULL
     write.csv(diff_gene_tab, file = paste0("DESeq2_diff_genes_", sample_name, ".csv"), row.names = FALSE)
     # Save DESeq2 result
     # Create volcano plot
