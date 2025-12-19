@@ -53,7 +53,7 @@ print(("========================================================="))
 #=================================================================
 gff <- rtracklayer::import(gff_file)
 gff <- as.data.frame(gff)
-gff_frame <- subset(gff, select = c("ID","Name","gene","start","end","strand"))
+gff_frame <- subset(gff, select = c("ID","Name","gene","start","end","strand","seqnames"))
 gff_frame <- mutate(gff_frame, gene = if_else(is.na(gene), Name, gene))
 # rownames(gff_frame) <- gff_frame$ID
 # gff_frame$ID <- NULL
@@ -180,8 +180,9 @@ p <- ggplot(pcaData, aes(PC1, PC2, color=Group)) +
     legend.position = "right",
     legend.title = element_text(size = 14),
     legend.text = element_text(size = 12),
-        axis.line  = element_line(color = "black", linewidth = 0.8),
-    axis.ticks = element_line(color = "black", linewidth = 0.8)
+    axis.line  = element_line(color = "black", linewidth = 0.6),
+    axis.ticks = element_line(color = "black", linewidth = 0.6),
+    panel.border = element_rect(color = "black",linewidth = 1.2, fill = NA)
   ) +
   ggtitle(paste("The PCA plot for", ref_name," as reference")) +
   coord_fixed()
