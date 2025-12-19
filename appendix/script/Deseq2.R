@@ -173,17 +173,20 @@ percentVar <- round(100 * attr(pcaData, "percentVar"))
 p <- ggplot(pcaData, aes(PC1, PC2, color=Group)) +
   geom_point(size=3) +
   xlab(paste0("PC1: ",percentVar[1],"% variance")) +
-  ylab(paste0("PC2: ",percentVar[2],"% variance")) + theme_bw() +
+  ylab(paste0("PC2: ",percentVar[2],"% variance")) + theme_bw() +theme_bw() +
   theme(
     axis.title = element_text(size = 14, face = "bold"),
     axis.text = element_text(size = 14),
     legend.position = "right",
     legend.title = element_text(size = 14),
     legend.text = element_text(size = 12),
+        axis.line  = element_line(color = "black", linewidth = 0.8),
+    axis.ticks = element_line(color = "black", linewidth = 0.8)
   ) +
   ggtitle(paste("The PCA plot for", ref_name," as reference")) +
   coord_fixed()
 ggsave(filename = paste0("1_PCA_", ref_name, ".pdf"), plot = p, width = 6, height = 5)
+
 
 #=================================================================
 #+++++++++++++++++++++++Step 4 Differential expression +++++++++++
