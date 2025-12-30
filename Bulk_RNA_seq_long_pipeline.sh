@@ -245,7 +245,7 @@ cd ${out_put_path}/4_featureCount/overlap_CDS
 ln -s ${out_put_path}/3_1_mapping/*sorted_reads.bam ./
 
 ls |grep barcode|cut -f 2 -d '.' | sort | uniq | while read ref; do
-echo "featureCounts -O -d 30 -D 3000 -t CDS,ncRNA,tmRNA,tRNA,regulatory_region,oriT,oriC -g ID -a ${reference_genome}/${ref}.gff3 -o ${ref}_gene.count -T 4 -L " $(ls *${ref}.sorted_reads.bam | tr '\n' ' ') " "
+echo "featureCounts -O -d 30 -D 3000 -t CDS,ncRNA,tmRNA,regulatory_region,oriT,oriC -g ID -a ${reference_genome}/${ref}.gff3 -o ${ref}_gene.count -T 4 -L " $(ls *${ref}.sorted_reads.bam | tr '\n' ' ') " "
 done > run_featureCount_overlap.sh
 
 count=1
@@ -310,3 +310,29 @@ done < run_deseq2.sh
 
 sh ${jobs_check_shell} -f run_deseq2.sh -l deseq2
 
+#=================================================================
+#+++++++++++++++++++++++Step 6 Summarize analysis ++++++++++++++++
+#=================================================================
+mkdir -p ${out_put_path}/6_Summarize_analysis
+cd ${out_put_path}/6_Summarize_analysis
+cp ${out_put_path}/1_2_QC_stat/${sample_name}_NanoPlot/NanoStats.txt 1_1_NanoPlot_stats.txt
+cp ${out_put_path}/1_2_QC_stat/${sample_name}_QC_stat.txt 1_2_reads_QC_stat.txt
+cat ${out_put_path}/2_Demultiplexing/Demux_stat.txt | sed 's/^.*barcode/barcode/g' > 2_Demultiplexing_stat.txt
+
+echo -e "sample_name\treference\tmapped_reads\tprimary_mapped" > 3_1_mapping_stats.txt
+ls ${out_put_path}/3_1_mapping/*alignment_stats.txt | while read line; do
+    file_name=$(basename $line | sed 's/.alignment_stats.txt//g')
+    sample_name=$(cut -f 1 -d '.' <<< "$file_name")
+    reference=$(cut -f 2 -d '.' <<< "$file_name")
+    mapped_reads=$(grep "mapped (" $line|grep -v "primary mapped" | awk -F':' '{print $1}'|sed 's/^.*(//g' )
+    primary_mapped=$(grep "primary mapped" $line | awk -F':' '{print $1}'|sed 's/^.*(//g' )
+    
+    echo -e "${sample_name}\t${reference}\t${mapped_reads}\t${primary_mapped}"  >> 3_1_mapping_stats.txt
+done
+
+
+mkdir -p 4_featureCount_summary/overlap_CDS 4_featureCount_summary/nonoverlap_CDS
+cp ${out_put_path}/4_featureCount/overlap_CDS/*summary ${out_put_path}/6_Summarize_analysis/4_featureCount_summary/overlap_CDS/
+cp ${out_put_path}/4_featureCount/nonoverlap_CDS/*summary ${out_put_path}/6_Summarize_analysis/4_featureCount_summary/nonoverlap_CDS/
+
+sed -i 's/\.sorted_reads\.bam//g' 4_featureCount_summary/*/*summary
